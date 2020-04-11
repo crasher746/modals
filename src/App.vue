@@ -3,15 +3,43 @@
         <div class="wrapper-content">
             <section>
                 <div class="container">
-
-                    <button class="btn btnPrimary" @click="modalFirst = !modalFirst">Show first modal</button>
                     <!--first modal-->
+                    <button class="btn btnPrimary" @click="modalFirst = !modalFirst">Show first modal</button>
                     <modals title="First modal"
-                            v-if="modalFirst"
-                            @close="modalFirst = !modalFirst"
+                            v-show="modalFirst"
+                            @close="modalFirst = false"
                     >
-
+                        <!--body-->
+                        <div slot="body">
+                            <p>Text Text Text Text Text</p>
+                            <button class="btn btnPrimary" @click="modalFirst = !modalFirst">Well Done!</button>
+                        </div>
                     </modals>
+
+                    <!--second modal-->
+                    <button class="btn btnPrimary" @click="modalSecond.show = !modalSecond.show">Show modal with form
+                    </button>
+                    <modals title="Modal with form"
+                            v-show="modalSecond.show"
+                            @close="modalSecond.show = false"
+                    >
+                        <!--body-->
+                        <div slot="body">
+                            <form @submit.prevent="submitSecondForm">
+                                <label>Name:</label>
+                                <input type="text" required v-model="modalSecond.name">
+                                <label>Email:</label>
+                                <input type="email" required v-model="modalSecond.email">
+                                <button class="btn btnPrimary">Submit!</button>
+                            </form>
+                            <!--<p>Text Text Text Text Text</p>-->
+                        </div>
+                    </modals>
+
+                    <!--modal with validate-->
+                    <button class="btn btnPrimary" @click="modalValidate = !modalValidate">Show modal with form + validate</button>
+                    <modalValidate v-show="modalValidate" @close="modalValidate = false"/>
+
                 </div>
             </section>
 
@@ -20,15 +48,33 @@
 </template>
 
 <script>
-    import modals from './components/Modal'
+    import modals from './components/UI/Modal'
+    import modalValidate from './components/ModalValidate'
 
     export default {
         components: {
-            modals
+            modals, modalValidate
         },
         data() {
             return {
-                modalFirst: false
+                modalFirst: false,
+                modalSecond: {
+                    show: false,
+                    name: '',
+                    email: ''
+                },
+                modalValidate: false
+            }
+        },
+        methods: {
+            submitSecondForm() {
+                console.log({
+                    name: this.modalSecond.name,
+                    email: this.modalSecond.email
+                })
+                this.modalSecond.name = ''
+                this.modalSecond.email = ''
+                this.modalSecond.show = false
             }
         }
     }
